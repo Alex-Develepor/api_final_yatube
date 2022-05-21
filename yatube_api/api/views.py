@@ -2,17 +2,13 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from posts.models import Group, Post, User
 from rest_framework import filters, permissions, status, viewsets
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.pagination import LimitOffsetPagination
 
 from .permission import IsOwnerOrReadOnly
-from .serializers import (
-    CommentSerializer,
-    FollowSerializer,
-    GroupSerializer,
-    PostSerializer
-)
+from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
+                          PostSerializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -48,16 +44,23 @@ class GroupViewSet(viewsets.ModelViewSet):
     def create(self, request):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 class FollowViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post']
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['user__username', 'following__username']
 
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.request.user.username)
-        return user.follower
+        user = self.request.user
+        return user.follower.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
