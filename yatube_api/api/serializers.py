@@ -1,5 +1,5 @@
-from posts import models
 from rest_framework import serializers
+from posts.models import Comment, Follow, Group, Post, User
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        model = models.Post
+        model = Post
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -21,26 +21,26 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        model = models.Comment
+        model = Comment
 
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
-        queryset=models.User.objects.all(),
+        queryset=User.objects.all(),
         slug_field='username',
         default=serializers.CurrentUserDefault()
     )
     following = serializers.SlugRelatedField(
-        queryset=models.User.objects.all(),
+        queryset=User.objects.all(),
         slug_field='username',
     )
 
     class Meta:
         fields = '__all__'
-        model = models.Follow
+        model = Follow
         validators = [
             serializers.UniqueTogetherValidator(
-                queryset=models.Follow.objects.all(),
+                queryset=Follow.objects.all(),
                 fields=['user', 'following'],
                 message='Подписка имеется'
             )
@@ -57,4 +57,4 @@ class FollowSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'title')
-        model = models.Group
+        model = Group
