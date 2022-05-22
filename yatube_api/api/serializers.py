@@ -1,4 +1,5 @@
-from yatube_api.posts.models import Comment, Group, Post, User, Follow
+from posts.models import Comment, Follow, Group, Post, User
+
 from rest_framework import serializers
 
 
