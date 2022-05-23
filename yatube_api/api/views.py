@@ -5,10 +5,10 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from posts.models import Group, Post
 from .permission import IsOwnerOrReadOnly
 from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
                           PostSerializer)
+from posts.models import Group, Post
 
 
 class PostViewSet(viewsets.ModelViewSet):
